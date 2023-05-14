@@ -25,4 +25,33 @@ for row in cur:
     except:
         continue
 
+    if not ('status' in js and js['status'] == 'OK'):
+        continue
 
+    lat = js["results"][0]["geometry"]["location"]["lat"]
+    lng = js["results"][0]["geometry"]["location"]["lng"]
+
+    if lat == 0 or lng == 0:
+        continue
+
+    where = js['results'][0]['formatted_address']
+    where = where.replace("'", "")
+
+    try:
+        print(where, lat, lng)
+
+        count += 1
+        if count > 1:
+            f_hand.write(",\n")
+
+        output = "["+str(lat)+", "+str(lng)+", '"+where+"']"
+        f_hand.write(output)
+
+    except:
+        continue
+
+f_hand.write("\n];\n")
+cur.close()
+f_hand.close()
+print(f"{count} records written to where.js")
+print("Open where.html to view in a browser")
