@@ -43,7 +43,7 @@ for line in f_hand:
     address = line.strip()
     print('')
     cur.execute("SELECT geodata FROM Locations WHERE address= ?",
-        (memoryview(address.encode()), ))
+                (memoryview(address.encode()), ))
 
     try:
         data = cur.fetchone()[0]
@@ -62,3 +62,27 @@ for line in f_hand:
 
     print(f"Retrieving {url}")
     uh = urllib.request.urlopen(url, context=ctx)
+    data = uh.read().decode()
+    print("Retrieved", len(data), "characters", data[:20].replace('\n', ' '))
+    count += 1
+
+    try:
+        js = json.loads(data)
+    except:
+        print(data)  # Printing in case unicode causes an error
+        continue
+
+    if 'status' not in js or (js['status'] != 'OK' and js['status'] != 'ZERO RESULTS'):
+        print("==== FAILURE TO RETRIEVE ====")
+        print(data)
+        break
+
+    cur.execute('''INSERT INTO Locations (address, geodata)
+            VALUES ( ?, ? )''', (memoryview(address.encode()), memoryview(data.encode())))
+
+    conn.commit()
+    if count % 10 == 0:
+        print('Pausing for a bit...')
+        time.sleep(5)
+
+print("Run geodump.py to read the data from the database so you can visualize it on a map.")
