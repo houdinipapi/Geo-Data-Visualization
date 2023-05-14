@@ -5,7 +5,7 @@
     <title>A Map of Information</title>
     <link href="https://google-developers.appspot.com/maps/documentation/javascript/examples/default.css" rel="stylesheet">
 
-    <!-- If you are in China, you may need to use theis site for the Google Maps code
+    <!-- If you are in China, you may need to use this site for the Google Maps code
     <script src="https://maps.google.cn/maps/api/js" type="text/javascript"></script> -->
 
     <script src="https://maps.googleapis.com/maps/api/js"></script>
@@ -25,7 +25,7 @@
         i = 0;
         var markers = [];
         for ( pos in myData ) {
-            i = i + 1;
+            i += 1;
             var row = myData[pos];
 		    window.console && console.log(row);
             // if ( i < 3 ) { alert(row); }
